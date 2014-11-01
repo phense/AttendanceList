@@ -14,6 +14,8 @@
  * @version 0.1
  */
 
+require_once 'ErrorLogging.php';
+
 class AttendeesFile {
   /**
    * Filehandle on local file
@@ -28,8 +30,12 @@ class AttendeesFile {
   private $attendeecounter = 1;
 
   function __construct() {
-      $this->filehandle = @fopen('attendees.tex', "w") or
-          exit ("Error: could not create attendees.tex");
+      $this->filehandle = @fopen('attendees.tex', "w");
+      if (!$this->filehandle) {
+        report("fopen of attendees.tex failed");
+        exit ("Fatal Error: Cannot create the Attendees file.");
+      }
+
   }
 
   function __destruct() {
@@ -47,8 +53,8 @@ class AttendeesFile {
       . "}{" . $name ."}\n";
 
       if (!fwrite($this->filehandle, $content)) {
-          print "Error: Cannot write attendees to file.";
-          exit;
+          report("fwrite to attendees.tex failed");
+          exit ("Fatal Error: Cannot write attendees to file.");
       }
       $this->attendeecounter += 1;
   }

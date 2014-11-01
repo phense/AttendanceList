@@ -15,6 +15,7 @@
  */
 
 require 'DbConfig.php';
+require_once 'ErrorLogging.php';
 
 class MySqlDB {
     private $db;
@@ -26,8 +27,10 @@ class MySqlDB {
     function __construct() {
         $this->db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, 3306);
         if ($this->db->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $this->db->connect_errno . ") "
-            . $this->db->connect_error;
+            echo "Fatal Error: Failed to connect to MySQL: (" . $this->db->connect_errno
+                . ") " . $this->db->connect_error;
+            report($this->db->connect_error);
+            exit();
         }
     }
 
@@ -43,7 +46,8 @@ class MySqlDB {
      */
     private function query_statement($statement) {
         if(!$result = $this->db->query($statement)) {
-            die('There was an error running the query [' .
+            report($this->db->error);
+            exit ('Fatal Error: There was an error running the query [' .
                 $this->db->error . ']');
         }
 

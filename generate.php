@@ -28,7 +28,11 @@ define('USE_SQL_DB', true);
 ////////////////////////
 // SCRIPT STARTS HERE //
 ////////////////////////
+//error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); // debug
+error_reporting(E_ERROR); // error only
 
+
+require_once 'ErrorLogging.php';
 require 'AttendeesFile.php';
 require 'MySqlDB.php';
 
@@ -112,7 +116,8 @@ function generatePDF() {
         exit();
     }
     else {
-        exit ("Error: Problem with PDF Generation.");
+        report("PDF does not exist after LaTeX run");
+        exit ("Fatal Error: PDF could not be created. Check your LaTeX System.");
     }
 }
 
